@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="theme-color" content="#050a14" />
+  <title>عاصفة المعدن</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div class="loading-splash" id="splash">
+    <h1>عاصفة المعدن</h1>
+    <div class="spinner"></div>
+    <p style="color:#8aa0b8;font-size:.9rem">جاري تجهيز الحظيرة…</p>
+  </div>
+
+  <canvas id="game"></canvas>
+
+  <!-- Hangar -->
+  <div class="screen" id="hangar">
+    <div class="brand-bar">
+      <div>
+        <div class="brand-title">عاصفة المعدن</div>
+        <div class="brand-sub">عرض تجريبي · قتال جوي · وديان صخرية</div>
+      </div>
+      <div class="currency">
+        <span><i class="dot-gold"></i> ١٬١٥٠</span>
+        <span><i class="dot-blue"></i> ٣٬٠٠٠</span>
+      </div>
+    </div>
+    <div class="nav-tabs">
+      <button class="nav-tab active" data-tab="hangar" type="button">الحظيرة</button>
+      <button class="nav-tab" data-tab="lb" type="button">لوحة المتصدرين</button>
+    </div>
+    <div class="hangar-body" id="hangar-body">
+      <div class="jet-list" id="jet-list"></div>
+      <aside class="stats-panel" id="stats-panel">
+        <h2 id="stat-name">إف-١٥ إيغل <span class="lvl">مستوى ٢٠</span></h2>
+        <div class="stat-rows" id="stat-rows"></div>
+        <div class="weapon-slots" id="weapon-slots">
+          <div class="wslot" title="الطائرة">✈</div>
+          <div class="wslot" title="مدفع">🔫</div>
+          <div class="wslot" title="صاروخ">🚀</div>
+          <div class="wslot" title="شعلات">✦</div>
+        </div>
+        <div class="hangar-actions">
+          <button class="btn btn-ghost" type="button" id="btn-practice">تدريب</button>
+          <button class="btn btn-primary" type="button" id="btn-match">بدء المباراة ٥ ضد ٥</button>
+        </div>
+      </aside>
+    </div>
+    <div class="hangar-body" id="lb-panel">
+      <div style="flex:1;overflow:auto;padding:4px 0;display:flex;flex-direction:column;gap:8px" id="lb-list"></div>
+      <aside class="stats-panel">
+        <h2>أفضل الطيارين</h2>
+        <p style="color:var(--muted);font-size:.9rem;line-height:1.6">
+          تسلّق لوحة المتصدرين عبر الانتصارات في الوادي. هذا العرض تجريبي بالكامل — بدون خوادم.
+        </p>
+        <div class="hangar-actions">
+          <button class="btn btn-primary" type="button" id="btn-back-hangar">عودة للحظيرة</button>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <!-- In-match HUD -->
+  <div id="hud">
+    <div class="brand-vert">عاصفة المعدن</div>
+    <div class="hud-top">
+      <span class="score-b" id="score-blue">٠</span>
+      <span class="timer" id="match-timer">٣:٠٠</span>
+      <span class="score-r" id="score-red">٠</span>
+    </div>
+    <div class="team-strip" id="team-strip"></div>
+    <div class="weapons">
+      <button class="wbtn hit" id="btn-missile" type="button"><span class="ico">🚀</span><span id="ammo-m">٢/٢</span></button>
+      <button class="wbtn hit" id="btn-cannon" type="button"><span class="ico">🔫</span><span>مدفع</span></button>
+      <button class="wbtn hit" id="btn-flare" type="button"><span class="ico">✦</span><span id="ammo-f">٤/٤</span></button>
+    </div>
+    <div class="reticle"><div class="lock-box" id="lock-box"></div></div>
+    <div class="speed-alt" id="speed-alt">٠ كم/س · ارتفاع ٠ م</div>
+    <div class="labels-layer" id="labels"></div>
+    <div class="radar" id="radar">
+      <div class="radar-grid"></div>
+      <div class="radar-cone" id="radar-cone"></div>
+      <div class="radar-dot self"></div>
+    </div>
+    <div class="touch-zone hit" id="stick"><div class="touch-knob" id="knob"></div></div>
+    <div class="bank-btns">
+      <button type="button" id="bank-l" class="hit">‹</button>
+      <button type="button" id="bank-r" class="hit">›</button>
+    </div>
+    <div class="hint-bar">WASD / أسهم · Space مدفع · F صاروخ · X شعلات · Shift احتراق</div>
+  </div>
+
+  <!-- Result -->
+  <div class="screen hidden" id="result">
+    <div class="result-card" id="result-card">
+      <h1 id="result-title">انتصار</h1>
+      <p id="result-sub">أكملت المباراة بنجاح</p>
+      <div class="result-stats">
+        <div><strong id="r-kills">٠</strong><span>إسقاطات</span></div>
+        <div><strong id="r-score">٠</strong><span>نقاط الفريق</span></div>
+        <div><strong id="r-dmg">٠</strong><span>ضرر</span></div>
+        <div><strong id="r-acc">٠٪</strong><span>دقة تقريبية</span></div>
+      </div>
+      <div class="hangar-actions">
+        <button class="btn btn-ghost" type="button" id="btn-again">إعادة</button>
+        <button class="btn btn-primary" type="button" id="btn-hangar">الحظيرة</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="vendor/three.min.js"></script>
+  <script src="js/game.js"></script>
+</body>
+</html>
